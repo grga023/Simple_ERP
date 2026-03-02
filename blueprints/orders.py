@@ -147,7 +147,7 @@ def create_order():
         )
         db.session.add(order)
         db.session.commit()
-        logger.info(f"Order created: {order.name} for {order.customer} (ID: {order.id}, Qty: {quantity}, Price: {price})")
+        logger.debug(f"Order created: {order.name} for {order.customer} (ID: {order.id}, Qty: {quantity}, Price: {price})")
         return jsonify({'ok': True})
     except Exception as e:
         db.session.rollback()
@@ -202,7 +202,7 @@ def delete_order(order_id):
     order_name = order.name
     db.session.delete(order)
     db.session.commit()
-    logger.info(f"Order deleted: {order_name} (ID: {order_id})")
+    logger.debug(f"Order deleted: {order_name} (ID: {order_id})")
     return jsonify({'ok': True})
 
 @orders_bp.route('/api/update_order/<int:order_id>', methods=['POST'])
@@ -285,7 +285,7 @@ def order_from_lager():
     )
     db.session.add(order)
     db.session.commit()
-    logger.info(f"Order from lager created: {order.name} (ID: {order.id}, Status: {status})")
+    logger.debug(f"Order from lager created: {order.name} (ID: {order.id}, Status: {status})")
     return jsonify({'ok': True, 'status': status})
 
 # return_to_lager
@@ -317,5 +317,5 @@ def return_to_lager(order_id):
     db.session.delete(order)
     
     db.session.commit()
-    logger.info(f"Order {order_id} ({order_name}) returned to lager and deleted")
+    logger.debug(f"Order {order_id} ({order_name}) returned to lager and deleted")
     return jsonify({'ok': True})

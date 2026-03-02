@@ -75,7 +75,7 @@ def add_inventory():
         )
         db.session.add(item)
         db.session.commit()
-        logger.info(f"Inventory item added: {item.name} (ID: {item.id}, Qty: {quantity})")
+        logger.debug(f"Inventory item added: {item.name} (ID: {item.id}, Qty: {quantity})")
         return jsonify({'ok': True})
     except Exception as e:
         db.session.rollback()
@@ -95,7 +95,7 @@ def delete_inventory(item_id):
     item_name = item.name
     db.session.delete(item)
     db.session.commit()
-    logger.info(f"Inventory item deleted: {item_name} (ID: {item_id})")
+    logger.debug(f"Inventory item deleted: {item_name} (ID: {item_id})")
     return jsonify({'ok': True})
 
 
