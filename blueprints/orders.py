@@ -102,7 +102,7 @@ def get_realized_orders():
 @orders_bp.route('/api/orders', methods=['POST'])
 @login_required
 def create_order():
-    logger.debug("Creating new order")
+    logger.info("Creating new order")
     try:
         form_data = request.form
         file = request.files.get('image')
@@ -147,7 +147,7 @@ def create_order():
         )
         db.session.add(order)
         db.session.commit()
-        logger.debug(f"Order created: {order.name} for {order.customer} (ID: {order.id}, Qty: {quantity}, Price: {price})")
+        logger.info(f"Order created: {order.name} for {order.customer} (ID: {order.id}, Qty: {quantity}, Price: {price})")
         return jsonify({'ok': True})
     except Exception as e:
         db.session.rollback()
@@ -193,7 +193,7 @@ def get_order(order_id):
 @orders_bp.route('/api/delete_order/<int:order_id>', methods=['DELETE'])
 @login_required
 def delete_order(order_id):
-    logger.debug(f"Deleting order: {order_id}")
+    logger.info(f"Deleting order: {order_id}")
     order = db.session.get(Order, order_id)
     if not order:
         logger.warning(f"Delete failed: Order {order_id} not found")
@@ -202,7 +202,7 @@ def delete_order(order_id):
     order_name = order.name
     db.session.delete(order)
     db.session.commit()
-    logger.debug(f"Order deleted: {order_name} (ID: {order_id})")
+    logger.info(f"Order deleted: {order_name} (ID: {order_id})")
     return jsonify({'ok': True})
 
 @orders_bp.route('/api/update_order/<int:order_id>', methods=['POST'])
@@ -241,7 +241,7 @@ def update_order(order_id):
 @login_required
 def order_from_lager():
     data = request.get_json()
-    logger.debug(f"Creating order from lager: lager_id={data.get('lager_id')}")
+    logger.info(f"Creating order from lager: lager_id={data.get('lager_id')}")
     
     order_qty = int(data.get('quantity', 1))
     lager_id = int(data.get('lager_id', 0)) if data.get('lager_id') else None
@@ -285,14 +285,14 @@ def order_from_lager():
     )
     db.session.add(order)
     db.session.commit()
-    logger.debug(f"Order from lager created: {order.name} (ID: {order.id}, Status: {status})")
+    logger.info(f"Order from lager created: {order.name} (ID: {order.id}, Status: {status})")
     return jsonify({'ok': True, 'status': status})
 
 # return_to_lager
 @orders_bp.route('/api/return_to_lager/<int:order_id>', methods=['POST'])
 @login_required
 def return_to_lager(order_id):
-    logger.debug(f"Returning order to lager: {order_id}")
+    logger.info(f"Returning order to lager: {order_id}")
     order = db.session.get(Order, order_id)
     if not order:
         logger.warning(f"Return to lager failed: Order {order_id} not found")
@@ -317,5 +317,5 @@ def return_to_lager(order_id):
     db.session.delete(order)
     
     db.session.commit()
-    logger.debug(f"Order {order_id} ({order_name}) returned to lager and deleted")
+    logger.info(f"Order {order_id} ({order_name}) returned to lager and deleted")
     return jsonify({'ok': True})
