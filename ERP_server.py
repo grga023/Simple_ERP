@@ -13,6 +13,7 @@ import argparse
 from logging.handlers import RotatingFileHandler
 from flask import Flask, jsonify, send_from_directory
 from flask_login import LoginManager
+import flask.cli
 from models import db, User
 from blueprints.orders import orders_bp
 from blueprints.lager import lager_bp
@@ -187,11 +188,13 @@ def main():
     app = create_app()
     configure_logging(app, logging.DEBUG if debug else logging.INFO)
 
+    flask.cli.show_server_banner = lambda *args, **kwargs: None
+
     t = threading.Thread(target=notification_scheduler, args=(app,), daemon=True)
     t.start()
 
     app.logger.info("Starting ERP server on %s:%s", host, port)
-    app.run(host=host, port=port, debug=debug)
+    app.run(host=host, port=port, debug=debug, use_reloader=False)
 
 
 if __name__ == '__main__':
