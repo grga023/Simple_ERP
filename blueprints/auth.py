@@ -8,6 +8,7 @@ from models import db, User
 from datetime import datetime
 import secrets
 import string
+from blueprints.email_notify import get_email_config, send_email
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -99,7 +100,14 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        flash(f'Korisnik {username} kreiran! Privremena lozinka: {password}', 'success')
+        # Pošalji email novom korisniku sa pristupnim podacima
+        email_sent = send_new_user_email(username, email, password)
+        
+        if email_sent:
+            flash(f'Korisnik {username} kreiran! Email sa pristupnim podacima je poslat na {email}', 'success')
+        else:
+            flash(f'Korisnik {username} kreiran! Privremena lozinka: {password} (Email nije poslat - proverite konfiguraciju)', 'warning')
+        
         return redirect(url_for('auth.register'))
     
     return render_template('register.html')
@@ -146,6 +154,77 @@ def generate_random_password(length=8):
     """Generiši random lozinku sa malim i velikim slovima i brojevima"""
     characters = string.ascii_letters + string.digits
     return ''.join(secrets.choice(characters) for _ in range(length))
+
+
+def send_new_user_email(username, email, password):
+    """Pošalji email novom korisniku sa pristupnim podacima"""
+    config = get_email_config()
+    
+    # Ako email nije omogućen ili nema konfiguracije, preskoči slanje
+    if not config.enabled or not config.sender_email or not config.app_password:
+        return False
+    
+    subject = '🔐 Dobrodošli u Latice sa Pričom ERP - Pristupni podaci'
+    
+    body = f'''
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; }}
+            .header {{ background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }}
+            .content {{ background-color: white; padding: 30px; border-radius: 0 0 10px 10px; }}
+            .credentials {{ background-color: #e8f5e9; padding: 15px; border-left: 4px solid #4CAF50; margin: 20px 0; }}
+            .credentials strong {{ color: #2e7d32; }}
+            .warning {{ background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }}
+            .footer {{ text-align: center; margin-top: 20px; color: #888; font-size: 12px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎉 Dobrodošli!</h1>
+            </div>
+            <div class="content">
+                <p>Poštovani/a,</p>
+                <p>Vaš nalog u <strong>Latice sa Pričom ERP</strong> sistemu je uspešno kreiran.</p>
+                
+                <div class="credentials">
+                    <h3>📧 Vaši pristupni podaci:</h3>
+                    <p><strong>Korisničko ime:</strong> {username}</p>
+                    <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Privremena lozinka:</strong> {password}</p>
+                </div>
+                
+                <div class="warning">
+                    <h4>⚠️ Važno!</h4>
+                    <p>Pri prvom prijavljivanju biće potrebno da promenite privremenu lozinku. 
+                    Molimo vas da čuvate ove pristupne podatke na sigurnom mestu.</p>
+                </div>
+                
+                <p>Možete se prijaviti na sistem i početi sa radom.</p>
+                <p>Srdačan pozdrav,<br>
+                <strong>Latice sa Pričom ERP Tim</strong></p>
+                
+                <div class="footer">
+                    <p>Ovo je automatska poruka. Molimo vas da ne odgovarate na ovaj email.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
+    
+    # Privremeno promeni receiver_email da šalje novom korisniku
+    original_receiver = config.receiver_email
+    config.receiver_email = email
+    
+    success = send_email(subject, body, config)
+    
+    # Vrati originalni receiver
+    config.receiver_email = original_receiver
+    
+    return success
 
 
 @auth_bp.route('/api/user/profile')
