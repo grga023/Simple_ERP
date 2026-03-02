@@ -927,45 +927,43 @@ body.dark-mode .form-textarea::placeholder {
     box-sizing: border-box;
   }
   
-  /* Date input specific mobile fixes */
-  input[type="date"] {
-    max-width: 100%;
-    min-width: 0;
-    padding: 0.5rem 0.625rem !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px !important;
-  }
-  
   /* Kombinacije mobile layout - keep quantity, color, X on same line */
   .kombinacija-row {
-    flex-wrap: wrap;
+    flex-wrap: nowrap !important;
     gap: 0.5rem;
   }
   
   .kombinacija-row .kolicina,
   .kombinacija-row .quantity {
-    flex: 0 1 25%;
+    flex: 0 1 28%;
     min-width: 65px;
   }
   
   .kombinacija-row .boja,
   .kombinacija-row .color {
-    flex: 1 1 45%;
-    min-width: 90px;
+    flex: 1 1 auto;
+    min-width: 80px;
   }
   
   .kombinacija-row .btn-remove {
-    flex: 0 0 40px;
+    flex: 0 0 42px;
     padding: 0.5rem;
-    min-width: 40px;
-    font-size: 1.1rem;
+    min-width: 42px;
+    font-size: 1.2rem;
   }
   
   .kombinacija-row .btn-add {
     flex: 0 0 100%;
     width: 100%;
     margin-top: 0.5rem;
+  }
+  
+  /* Fix date input overflow on mobile */
+  input[type="date"] {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+    font-size: 16px !important;
   }
   
   /* Modal responsive fixes */
