@@ -52,7 +52,7 @@ def configure_logging(app, level):
     log_file = os.path.join(log_dir, 'erp.log')
 
     formatter = logging.Formatter('[%(levelname)s] - [%(name)s] - %(message)s')
-
+    level=logging.DEBUG
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setLevel(level)
     stream_handler.setFormatter(formatter)
