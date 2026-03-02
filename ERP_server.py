@@ -138,7 +138,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        user = User.query.get(int(user_id))
+        user = db.session.get(User, int(user_id))
         if user:
             logger.debug(f"User loaded: {user.username} (ID: {user_id})")
         else:
