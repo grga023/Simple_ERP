@@ -64,6 +64,7 @@ def create_app():
     }
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['IMAGES_DIR'] = IMAGES_DIR
+    app.config['DATA_DIR'] = DATA_DIR
     app.config['SECRET_KEY'] = 'latice-sa-pricom-erp-secret'
 
     # Enable console output for debugging
