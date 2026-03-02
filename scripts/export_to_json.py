@@ -20,7 +20,7 @@ from datetime import datetime
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='[%(levelname)s] - [%(name)s] - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 def export_orders():
     """Export orders to separate JSON files based on status."""
-    logger.info("Exporting orders...")
+    logger.debug("Exporting orders...")
     # Get orders by status
     new_orders = Order.query.filter_by(status='new').all()
     for_delivery = Order.query.filter_by(status='for_delivery').all()
@@ -65,7 +65,7 @@ def export_orders():
             json.dump(realized_data, f, ensure_ascii=False, indent=2)
         logger.debug("realized.json saved")
         
-        logger.info(f"Orders exported: {len(new_data)} new, {len(delivery_data)} delivery, {len(realized_data)} realized")
+        logger.debug(f"Orders exported: {len(new_data)} new, {len(delivery_data)} delivery, {len(realized_data)} realized")
     except Exception as e:
         logger.error(f"Error exporting orders: {e}", exc_info=True)
         raise
@@ -75,7 +75,7 @@ def export_orders():
 
 def export_lager():
     """Export lager items to JSON."""
-    logger.info("Exporting lager items...")
+    logger.debug("Exporting lager items...")
     try:
         items = LagerItem.query.all()
         data = [item.to_dict() for item in items]
@@ -84,7 +84,7 @@ def export_lager():
         with open(os.path.join(DATA_DIR, 'lager.json'), 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         
-        logger.info(f"Lager exported: {len(data)} items")
+        logger.debug(f"Lager exported: {len(data)} items")
         return len(data)
     except Exception as e:
         logger.error(f"Error exporting lager: {e}", exc_info=True)
@@ -93,7 +93,7 @@ def export_lager():
 
 def export_email_config():
     """Export email config to JSON."""
-    logger.info("Exporting email config...")
+    logger.debug("Exporting email config...")
     try:
         config = EmailConfig.query.first()
         if config:
@@ -106,7 +106,7 @@ def export_email_config():
             }
             with open(os.path.join(DATA_DIR, 'email_config.json'), 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-            logger.info("Email config exported successfully")
+            logger.debug("Email config exported successfully")
             return True
         logger.warning("No email config found to export")
         return False
@@ -117,7 +117,7 @@ def export_email_config():
 
 def export_notifications():
     """Export notification log to JSON."""
-    logger.info("Exporting notification log...")
+    logger.debug("Exporting notification log...")
     try:
         logs = NotificationLog.query.all()
         data = [log.notify_key for log in logs]
@@ -126,7 +126,7 @@ def export_notifications():
         with open(os.path.join(DATA_DIR, 'notified.json'), 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         
-        logger.info(f"Notification log exported: {len(data)} entries")
+        logger.debug(f"Notification log exported: {len(data)} entries")
         return len(data)
     except Exception as e:
         logger.error(f"Error exporting notification log: {e}", exc_info=True)

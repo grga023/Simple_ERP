@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):
     def set_password(self, password):
         logger.debug(f"Setting password for user: {self.username}")
         self.password_hash = generate_password_hash(password)
-        logger.info(f"Password updated for user: {self.username}")
+        logger.debug(f"Password updated for user: {self.username}")
 
     def check_password(self, password):
         result = check_password_hash(self.password_hash, password)

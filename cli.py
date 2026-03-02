@@ -13,7 +13,7 @@ from pathlib import Path
 # Setup basic logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='[%(levelname)s] - [%(name)s] - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)
     ]

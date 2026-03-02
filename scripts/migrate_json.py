@@ -23,7 +23,7 @@ import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='[%(levelname)s] - [%(name)s] - %(message)s'
 )
 
 # Ensure we can import from the project root
@@ -58,7 +58,7 @@ def load_json(filename):
 
 def migrate_orders():
     """Migrate orders from all 3 JSON files."""
-    logger.info("Starting orders migration from JSON files...")
+    logger.debug("Starting orders migration from JSON files...")
     count = 0
     for filename, status in [
         ('new_ord.json', 'new'),
@@ -89,15 +89,15 @@ def migrate_orders():
             count += 1
 
         print(f'  {filename}: {len(orders)} orders migrated as "{status}"')
-        logger.info(f"Migrated {len(orders)} orders from {filename} with status '{status}'")
+        logger.debug(f"Migrated {len(orders)} orders from {filename} with status '{status}'")
 
-    logger.info(f"Total orders migrated: {count}")
+    logger.debug(f"Total orders migrated: {count}")
     return count
 
 
 def migrate_lager():
     """Migrate lager items from lager.json."""
-    logger.info("Starting lager migration from JSON...")
+    logger.debug("Starting lager migration from JSON...")
     items = load_json('lager.json')
     if not items:
         print('  lager.json: 0 items (empty or missing)')
@@ -116,13 +116,13 @@ def migrate_lager():
         db.session.add(lager_item)
 
     print(f'  lager.json: {len(items)} items migrated')
-    logger.info(f"Migrated {len(items)} lager items")
+    logger.debug(f"Migrated {len(items)} lager items")
     return len(items)
 
 
 def migrate_email_config():
     """Migrate email config from email_config.json."""
-    logger.info("Starting email config migration...")
+    logger.debug("Starting email config migration...")
     config_data = load_json('email_config.json')
     if not config_data:
         print('  email_config.json: not found or empty, skipping')
@@ -140,7 +140,7 @@ def migrate_email_config():
         )
         db.session.add(config)
         print('  email_config.json: migrated')
-        logger.info("Email config migrated successfully")
+        logger.debug("Email config migrated successfully")
     else:
         print('  email_config.json: unexpected format, skipping')
         logger.warning(f"Email config has unexpected format: {type(config_data)}")
@@ -148,7 +148,7 @@ def migrate_email_config():
 
 def migrate_notifications():
     """Migrate notification log from notified.json."""
-    logger.info("Starting notification log migration...")
+    logger.debug("Starting notification log migration...")
     notified = load_json('notified.json')
     if not notified:
         print('  notified.json: not found or empty, skipping')
@@ -164,7 +164,7 @@ def migrate_notifications():
                 count += 1
 
     print(f'  notified.json: {count} notification keys migrated')
-    logger.info(f"Migrated {count} notification keys")
+    logger.debug(f"Migrated {count} notification keys")
 
 
 def main():
@@ -179,7 +179,7 @@ def main():
         # Check if database already has data
         existing_orders = Order.query.count()
         existing_lager = LagerItem.query.count()
-        logger.info(f"Current database state: {existing_orders} orders, {existing_lager} lager items")
+        logger.debug(f"Current database state: {existing_orders} orders, {existing_lager} lager items")
         
         if existing_orders > 0 or existing_lager > 0:
             print(f'\n  Database already has data ({existing_orders} orders, {existing_lager} lager items).')
@@ -191,14 +191,14 @@ def main():
                 logger.info("Migration cancelled by user")
                 return
             # Clear existing data
-            logger.info("Clearing existing data...")
+            logger.debug("Clearing existing data...")
             NotificationLog.query.delete()
             EmailConfig.query.delete()
             LagerItem.query.delete()
             Order.query.delete()
             db.session.commit()
             print('  Existing data cleared.\n')
-            logger.info("Existing data cleared successfully")
+            logger.debug("Existing data cleared successfully")
 
         print('\nMigrating orders...')
         order_count = migrate_orders()
@@ -215,7 +215,7 @@ def main():
         # Commit all changes
         try:
             db.session.commit()
-            logger.info("All migrations committed to database")
+            logger.debug("All migrations committed to database")
         except Exception as e:
             logger.error(f"Failed to commit migrations: {e}", exc_info=True)
             db.session.rollback()
@@ -228,7 +228,7 @@ def main():
         print(f'  Database: {os.path.join(DATA_DIR, "erp.db")}')
         print(f'\nOriginal JSON files are preserved in data/ as backup.')
         print('=' * 50)
-        logger.info(f"Migration completed: {order_count} orders, {lager_count} lager items")
+        logger.debug(f"Migration completed: {order_count} orders, {lager_count} lager items")
 
 
 if __name__ == '__main__':

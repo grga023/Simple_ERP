@@ -27,7 +27,7 @@ def get_inventory():
     logger.debug("Fetching all inventory items")
     try:
         items = LagerItem.query.all()
-        logger.info(f"Retrieved {len(items)} inventory items")
+        logger.debug(f"Retrieved {len(items)} inventory items")
         return jsonify([i.to_dict() for i in items])
     except Exception as e:
         logger.error(f"Error fetching inventory: {e}", exc_info=True)
@@ -37,7 +37,7 @@ def get_inventory():
 @lager_bp.route('/api/inventory', methods=['POST'])
 @login_required
 def add_inventory():
-    logger.info("Adding new inventory item")
+    logger.debug("Adding new inventory item")
     try:
         form_data = request.form
         file = request.files.get('image')
@@ -75,7 +75,7 @@ def add_inventory():
         )
         db.session.add(item)
         db.session.commit()
-        logger.info(f"Inventory item added: {item.name} (ID: {item.id}, Qty: {quantity})")
+        logger.debug(f"Inventory item added: {item.name} (ID: {item.id}, Qty: {quantity})")
         return jsonify({'ok': True})
     except Exception as e:
         db.session.rollback()
@@ -86,7 +86,7 @@ def add_inventory():
 @lager_bp.route('/api/inventory/<int:item_id>', methods=['DELETE'])
 @login_required
 def delete_inventory(item_id):
-    logger.info(f"Deleting inventory item: {item_id}")
+    logger.debug(f"Deleting inventory item: {item_id}")
     item = db.session.get(LagerItem, item_id)
     if not item:
         logger.warning(f"Delete failed: Inventory item {item_id} not found")
@@ -102,7 +102,7 @@ def delete_inventory(item_id):
 @lager_bp.route('/api/inventory/<int:item_id>/increase_quantity', methods=['POST'])
 @login_required
 def increase_quantity(item_id):
-    logger.info(f"Increasing quantity for inventory item: {item_id}")
+    logger.debug(f"Increasing quantity for inventory item: {item_id}")
     item = db.session.get(LagerItem, item_id)
     if not item:
         logger.warning(f"Increase quantity failed: Item {item_id} not found")
@@ -118,5 +118,5 @@ def increase_quantity(item_id):
     old_quantity = item.quantity
     item.quantity += increase_by
     db.session.commit()
-    logger.info(f"Inventory quantity increased for {item.name} (ID: {item_id}): {old_quantity} -> {item.quantity}")
+        logger.debug(f"Inventory quantity increased for {item.name} (ID: {item_id}): {old_quantity} -> {item.quantity}")
     return jsonify({'ok': True, 'new_quantity': item.quantity})

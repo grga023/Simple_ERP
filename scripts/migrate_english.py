@@ -15,7 +15,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='[%(levelname)s] - [%(name)s] - %(message)s'
 )
 
 # Get database path (production location)
@@ -33,13 +33,13 @@ os.makedirs(BACKUP_DIR, exist_ok=True)
 
 def backup_database():
     """Create backup before migration"""
-    logger.info("Creating database backup...")
+    logger.debug("Creating database backup...")
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     backup_file = os.path.join(BACKUP_DIR, f'erp_backup_{timestamp}.db')
     try:
         shutil.copy2(DB_FILE, backup_file)
         print(f"✓ Backup created: {backup_file}")
-        logger.info(f"Backup created successfully: {backup_file}")
+        logger.debug(f"Backup created successfully: {backup_file}")
         return backup_file
     except Exception as e:
         logger.error(f"Failed to create backup: {e}", exc_info=True)
@@ -47,7 +47,7 @@ def backup_database():
 
 def migrate_orders_table(conn):
     """Migrate orders table: Serbian → English fields"""
-    logger.info("Starting orders table migration...")
+    logger.debug("Starting orders table migration...")
     print("\n▶ Migrating 'orders' table...")
     cursor = conn.cursor()
     
@@ -94,7 +94,7 @@ def migrate_orders_table(conn):
         
         conn.commit()
         print("  ✓ Orders table migrated successfully")
-        logger.info("Orders table migrated successfully")
+        logger.debug("Orders table migrated successfully")
         
     except Exception as e:
         conn.rollback()
@@ -104,7 +104,7 @@ def migrate_orders_table(conn):
 
 def migrate_lager_table(conn):
     """Migrate lager table: Serbian → English fields"""
-    logger.info("Starting lager table migration...")
+    logger.debug("Starting lager table migration...")
     print("\n▶ Migrating 'lager' table...")
     cursor = conn.cursor()
     
@@ -146,7 +146,7 @@ def migrate_lager_table(conn):
         
         conn.commit()
         print("  ✓ Lager table migrated successfully")
-        logger.info("Lager table migrated successfully")
+        logger.debug("Lager table migrated successfully")
         
     except Exception as e:
         conn.rollback()
@@ -215,25 +215,25 @@ def main():
     
     # Verify
     print("\n[4/4] Verifying migration...")
-    logger.info("Starting migration verification...")
+    logger.debug("Starting migration verification...")
     cursor = conn.cursor()
     
     try:
         cursor.execute("SELECT COUNT(*) FROM orders")
         order_count = cursor.fetchone()[0]
         print(f"  ✓ Orders: {order_count} records")
-        logger.info(f"Orders table verified: {order_count} records")
+        logger.debug(f"Orders table verified: {order_count} records")
         
         cursor.execute("SELECT COUNT(*) FROM lager")
         lager_count = cursor.fetchone()[0]
         print(f"  ✓ Lager: {lager_count} records")
-        logger.info(f"Lager table verified: {lager_count} records")
+        logger.debug(f"Lager table verified: {lager_count} records")
         
         conn.close()
         print("\n" + "=" * 60)
         print("✅ Migration completed successfully!")
         print("=" * 60)
-        logger.info("Migration completed successfully")
+        logger.debug("Migration completed successfully")
         
     except Exception as e:
         print(f"\n✗ Verification failed: {e}")

@@ -51,7 +51,7 @@ def configure_logging(app, level):
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, 'erp.log')
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('[%(levelname)s] - [%(name)s] - %(message)s')
 
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setLevel(level)
