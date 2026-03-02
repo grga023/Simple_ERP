@@ -65,7 +65,7 @@ function formatOpis(description) {
     if (detalji.length) html += (html ? '<br>' : '') + '<strong>Detalji:</strong><br>' + detalji.join('<br>');
     return html || '-';
 }
-async function loadToBeShipped() {
+async function loadRealized() {
     const res = await fetch('/api/orders/realized');
     const orders = await res.json();
     const tbody = document.querySelector('#shippingTable tbody');
@@ -93,7 +93,7 @@ async function loadToBeShipped() {
 }
 
 // initial load
-loadToBeShipped();
+loadRealized();
 
 function editOrder(id) {
     // Legacy function - redirect to edit page for compatibility
