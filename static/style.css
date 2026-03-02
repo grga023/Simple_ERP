@@ -951,6 +951,28 @@ body.dark-mode .form-textarea::placeholder {
     width: 100%;
     margin-top: 0.5rem;
   }
+  
+  /* Modal responsive fixes */
+  .modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: 95vh;
+    margin-top: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .modal-close {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.75rem;
+    width: 32px;
+    height: 32px;
+  }
 }
 
 /* ─────────────────────────────────
@@ -1022,6 +1044,102 @@ body.dark-mode .form-textarea::placeholder {
 .modal-overlay .btn-group {
   flex-direction: row !important;
   justify-content: center;
+}
+
+.modal-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--dark-gray);
+  transition: var(--transition-fast);
+  z-index: 10;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+body.dark-mode .modal-close {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--dark-gray);
+  transition: var(--transition-fast);
+  z-index: 10;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+body.dark-mode .modal-close {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* ─────────────────────────────────
