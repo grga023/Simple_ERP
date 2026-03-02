@@ -113,7 +113,8 @@ def check_and_notify():
             f'\u26A0\uFE0F {len(alerts)} porud\u017ebin(a) - rok uskoro!',
             body, config
         )
-        db.session.commit()        logger.info(f"Notification email sent for {len(alerts)} order(s)")
+        db.session.commit()
+        logger.info(f"Notification email sent for {len(alerts)} order(s)")
     else:
         logger.debug("No orders to notify")
 
