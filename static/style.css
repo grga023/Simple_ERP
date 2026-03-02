@@ -980,6 +980,12 @@ body.modern-body {
   display: flex;
 }
 
+/* Keep modal buttons horizontal on all screen sizes */
+.modal-overlay .btn-group {
+  flex-direction: row !important;
+  justify-content: center;
+}
+
 /* ─────────────────────────────────
    🖼️ LIGHTBOX FOR IMAGES
    ───────────────────────────────── */
