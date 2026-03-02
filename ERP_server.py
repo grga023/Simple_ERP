@@ -9,8 +9,8 @@ import json
 import threading
 import sqlite3
 import argparse
-from flask import Flask, jsonify, send_from_directory, request
-from flask_login import LoginManager, login_required
+from flask import Flask, jsonify, send_from_directory
+from flask_login import LoginManager
 from models import db, User
 from blueprints.orders import orders_bp
 from blueprints.lager import lager_bp

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, current_app
+from flask import Blueprint, request, jsonify, render_template, current_app
 from flask_login import login_required
 import time
 import os
