@@ -25,7 +25,7 @@ def save_config(data):
 def config_page():
     """Config stranica"""
     config = load_config()
-    return render_template('config.html', config=config)
+    return render_template('settings.html', config=config)
 
 @config_bp.route('/api/config', methods=['GET'])
 @login_required
