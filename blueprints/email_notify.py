@@ -107,15 +107,8 @@ def notification_scheduler(app):
 
 
 # ─── Page Route ────────────────────────────────────────────────
+# Settings page has been moved to config_bp and settings.html
 
-@email_bp.route('/podesavanja')
-@email_bp.route('/podesavanja.html')
-@login_required
-def podesavanja():
-    return render_template('podesavanja.html')
-
-
-# ─── API Routes ────────────────────────────────────────────────
 
 @email_bp.route('/api/email_config', methods=['GET'])
 @login_required
