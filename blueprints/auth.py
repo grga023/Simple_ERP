@@ -6,6 +6,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from models import db, User
 from datetime import datetime
+import secrets
+import string
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -22,6 +24,9 @@ def landing():
 def login():
     """Login stranica"""
     if current_user.is_authenticated:
+        # Check if user needs to change password
+        if current_user.password_change_required:
+            return redirect(url_for('auth.change_password_required'))
         return redirect(url_for('orders.index'))
     
     if request.method == 'POST':
@@ -32,6 +37,11 @@ def login():
         
         if user and user.check_password(password):
             login_user(user, remember=True)
+            
+            # Check if password change is required
+            if user.password_change_required:
+                return redirect(url_for('auth.change_password_required'))
+            
             next_page = request.args.get('next')
             return redirect(next_page if next_page else url_for('orders.dashboard'))
         else:
@@ -49,24 +59,20 @@ def logout():
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
-    """Registracija novog korisnika"""
-    if current_user.is_authenticated:
-        return redirect(url_for('orders.index'))
+    """Registracija novog korisnika - samo admin može"""
+    if not current_user.is_admin:
+        flash('Samo administrator može kreirati nove korisnike!', 'error')
+        return redirect(url_for('orders.dashboard'))
     
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
-        password = request.form.get('password')
-        password_confirm = request.form.get('password_confirm')
         
         # Validacija
-        if not username or not email or not password:
-            flash('Sva polja su obavezna!', 'error')
-            return render_template('register.html')
-        
-        if password != password_confirm:
-            flash('Lozinke se ne podudaraju!', 'error')
+        if not username or not email:
+            flash('Korisničko ime i email su obavezni!', 'error')
             return render_template('register.html')
         
         # Provera da li korisnik već postoji
@@ -78,25 +84,68 @@ def register():
             flash('Email već postoji!', 'error')
             return render_template('register.html')
         
+        # Generiši random lozinku od 8 karaktera
+        password = generate_random_password(8)
+        
         # Kreiraj novog korisnika
         user = User(
             username=username,
             email=email,
+            password_change_required=True,  # Mora promeniti lozinku
             created_at=datetime.now().isoformat()
         )
         user.set_password(password)
         
-        # Prvi korisnik je automatski admin
-        if User.query.count() == 0:
-            user.is_admin = True
-        
         db.session.add(user)
         db.session.commit()
         
-        flash('Registracija uspešna! Možete se ulogovati.', 'success')
-        return redirect(url_for('auth.login'))
+        flash(f'Korisnik {username} kreiran! Privremena lozinka: {password}', 'success')
+        return redirect(url_for('auth.register'))
     
     return render_template('register.html')
+
+
+@auth_bp.route('/change-password-required', methods=['GET', 'POST'])
+@login_required
+def change_password_required():
+    """Obavezna promena lozinke nakon prve prijave"""
+    if request.method == 'POST':
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validacija
+        if not old_password or not new_password or not confirm_password:
+            flash('Sva polja su obavezna!', 'error')
+            return render_template('change_password_required.html')
+        
+        if not current_user.check_password(old_password):
+            flash('Sadašnja lozinka je pogešna!', 'error')
+            return render_template('change_password_required.html')
+        
+        if new_password != confirm_password:
+            flash('Nove lozinke se ne podudaraju!', 'error')
+            return render_template('change_password_required.html')
+        
+        if len(new_password) < 6:
+            flash('Nova lozinka mora imati najmanje 6 karaktera!', 'error')
+            return render_template('change_password_required.html')
+        
+        # Promeni lozinku
+        current_user.set_password(new_password)
+        current_user.password_change_required = False
+        db.session.commit()
+        
+        flash('Lozinka uspešno promenjena! Sada možete nastaviti sa radom.', 'success')
+        return redirect(url_for('orders.dashboard'))
+    
+    return render_template('change_password_required.html')
+
+
+def generate_random_password(length=8):
+    """Generiši random lozinku sa malim i velikim slovima i brojevima"""
+    characters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(characters) for _ in range(length))
 
 
 @auth_bp.route('/api/user/profile')

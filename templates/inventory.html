@@ -383,6 +383,16 @@ function openOrderModal(lagerId, name, price, color, image, stock) {
         warn.className = 'stock-warning';
         warn.style.display = 'block';
     }
+    
+    // Initialize flatpickr for date input
+    if (document.getElementById('modalDatum')._flatpickr) {
+        document.getElementById('modalDatum')._flatpickr.destroy();
+    }
+    flatpickr('#modalDatum', {
+        dateFormat: 'Y-m-d',
+        locale: 'sr'
+    });
+    
     document.getElementById('orderModal').classList.add('active');
 }
 

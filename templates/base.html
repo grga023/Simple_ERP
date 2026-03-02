@@ -12,6 +12,8 @@
 {% endif %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 {% block head_extra %}{% endblock %}
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
@@ -234,6 +236,15 @@ async function openEditModal(orderId, refreshFunction) {
             const htmlDate = `${year}-${month}-${day}`;
             document.getElementById('editDate').value = htmlDate;
         }
+        
+        // Initialize flatpickr for date input
+        if (document.getElementById('editDate')._flatpickr) {
+            document.getElementById('editDate')._flatpickr.destroy();
+        }
+        flatpickr('#editDate', {
+            dateFormat: 'Y-m-d',
+            locale: 'sr'
+        });
         
         // Show current image if exists
         const preview = document.getElementById('editImagePreview');

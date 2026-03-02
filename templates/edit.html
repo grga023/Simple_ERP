@@ -101,6 +101,12 @@ async function loadOrder() {
     }
     
     document.querySelector('[name="description"]').value = order.description;
+    
+    // Initialize flatpickr for date input
+    flatpickr('#datepicker', {
+        dateFormat: 'Y-m-d',
+        locale: 'sr'
+    });
 }
 
 // Handle form submission

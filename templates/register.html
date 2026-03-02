@@ -188,12 +188,12 @@
 <body>
     <div class="register-container">
         <div class="logo">
-            <h1>🚀 Kreirajte nalog</h1>
-            <p>Počnite da koristite ERP sistem danas</p>
+            <h1>� Kreiraj novog korisnika</h1>
+            <p>Samo administratori mogu kreirati nove korisnike</p>
         </div>
 
         <div class="info-box">
-            <p><strong>💡 Prvi korisnik automatski postaje administrator!</strong></p>
+            <p><strong>🔐 Privremena lozinka:</strong> Sistem će automatski generisati nasumičnu lozinku od 8 karaktera. Korisnik će biti obaveštava promeniti lozinku pri prvoj prijavi.</p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -215,53 +215,14 @@
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <div class="form-group">
-                <label for="password">Lozinka</label>
-                <input type="password" id="password" name="password" required minlength="6">
-                <div class="password-strength">
-                    <div class="password-strength-bar" id="strength-bar"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password_confirm">Potvrdite lozinku</label>
-                <input type="password" id="password_confirm" name="password_confirm" required minlength="6">
-            </div>
-
-            <button type="submit" class="btn">Registruj se</button>
+            <button type="submit" class="btn">✨ Kreiraj korisnika</button>
         </form>
 
         <div class="divider">ili</div>
 
         <div class="links">
-            <p>Već imate nalog? <a href="{{ url_for('auth.login') }}">Prijavite se</a></p>
-            <p style="margin-top: 1rem;"><a href="{{ url_for('auth.landing') }}">← Nazad na početnu</a></p>
+            <p><a href="{{ url_for('orders.dashboard') }}">← Nazad na dashboard</a></p>
         </div>
     </div>
-
-    <script>
-        // Password strength indicator
-        document.getElementById('password').addEventListener('input', function(e) {
-            const password = e.target.value;
-            const strengthBar = document.getElementById('strength-bar');
-            let strength = 0;
-
-            if (password.length >= 6) strength += 25;
-            if (password.length >= 10) strength += 25;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
-            if (/[0-9]/.test(password)) strength += 15;
-            if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
-
-            strengthBar.style.width = strength + '%';
-            
-            if (strength < 40) {
-                strengthBar.style.background = '#f44336';
-            } else if (strength < 70) {
-                strengthBar.style.background = '#ff9800';
-            } else {
-                strengthBar.style.background = '#4caf50';
-            }
-        });
-    </script>
 </body>
 </html>
