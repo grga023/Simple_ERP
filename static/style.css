@@ -1093,6 +1093,16 @@ body.dark-mode .form-textarea::placeholder {
   font-weight: 700;
 }
 
+body.dark-mode .gradient-text,
+body.dark-mode .stat-value,
+body.dark-mode .nav-brand .brand-name {
+  background: linear-gradient(135deg, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #e2e8f0;
+}
+
 /* ─────────────────────────────────
    ⚠️ STOCK WARNING
    ───────────────────────────────── */
@@ -1165,6 +1175,19 @@ body.dark-mode .form-textarea::placeholder {
   font-family: inherit;
   font-size: 0.95rem;
   transition: var(--transition-fast);
+}
+
+body.dark-mode .form-field input,
+body.dark-mode .form-field select,
+body.dark-mode .form-field textarea {
+  background: #0b1220;
+  color: var(--dark-gray);
+  border-color: var(--light-gray);
+}
+
+body.dark-mode .form-field input::placeholder,
+body.dark-mode .form-field textarea::placeholder {
+  color: var(--gray);
 }
 
 .form-field input:focus,
