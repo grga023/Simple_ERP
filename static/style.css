@@ -795,11 +795,13 @@ body.dark-mode .form-textarea::placeholder {
   align-items: center;
 }
 
-.kombinacija-row .kolicina {
+.kombinacija-row .kolicina,
+.kombinacija-row .quantity {
   flex: 0 0 120px;
 }
 
-.kombinacija-row .boja {
+.kombinacija-row .boja,
+.kombinacija-row .color {
   flex: 1;
 }
 
@@ -935,25 +937,28 @@ body.dark-mode .form-textarea::placeholder {
     font-size: 14px !important;
   }
   
-  /* Kombinacije mobile layout */
+  /* Kombinacije mobile layout - keep quantity, color, X on same line */
   .kombinacija-row {
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
   
-  .kombinacija-row .kolicina {
-    flex: 0 1 30%;
-    min-width: 70px;
+  .kombinacija-row .kolicina,
+  .kombinacija-row .quantity {
+    flex: 0 1 25%;
+    min-width: 65px;
   }
   
-  .kombinacija-row .boja {
-    flex: 0 1 50%;
-    min-width: 100px;
+  .kombinacija-row .boja,
+  .kombinacija-row .color {
+    flex: 1 1 45%;
+    min-width: 90px;
   }
   
   .kombinacija-row .btn-remove {
-    flex: 0 1 10%;
+    flex: 0 0 40px;
     padding: 0.5rem;
-    min-width: 36px;
+    min-width: 40px;
     font-size: 1.1rem;
   }
   
